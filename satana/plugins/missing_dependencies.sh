@@ -143,6 +143,36 @@ function commands_to_packages() {
 	IFS=' ' read -r -a missing_packages_array <<< "${missing_packages_string_clean}"
 }
 
+#Install BeEF from GitHub when beef-xss package is missing or fake
+#shellcheck disable=SC2154
+function missing_dependencies_install_beef_from_source() {
+
+	local beef_install_script="${scriptfolder}scripts/install-beef.sh"
+
+	if [[ ! -f "${beef_install_script}" ]]; then
+		return 0
+	fi
+
+	if hash "beef" 2> /dev/null; then
+		detect_fake_beef
+		if [[ ${fake_beef_found} -eq 0 ]]; then
+			return 0
+		fi
+	fi
+
+	if hash "beef-xss" 2> /dev/null; then
+		return 0
+	fi
+
+	if [[ -f "/opt/beef/beef" ]]; then
+		return 0
+	fi
+
+	echo
+	language_strings "${language}" "missing_dependencies_3" "blue"
+	bash "${beef_install_script}" > /dev/null 2>&1 || bash "${beef_install_script}" || true
+}
+
 #Re-scan installed tools after package installation
 #shellcheck disable=SC2154
 function missing_dependencies_refresh_tool_status() {
@@ -275,6 +305,7 @@ function missing_dependencies_posthook_check_compatibility() {
 			commands_to_packages "${missing_commands_string}"
 
 			if [ ${#missing_packages_array[@]} -eq 0 ]; then
+				missing_dependencies_install_beef_from_source
 				missing_dependencies_refresh_tool_status
 				return
 			fi
@@ -313,6 +344,8 @@ function missing_dependencies_posthook_check_compatibility() {
 					fi
 				;;
 			esac
+
+			missing_dependencies_install_beef_from_source
 
 			missing_dependencies_refresh_tool_status
 

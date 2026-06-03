@@ -39,7 +39,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "dos_attacks",
         "title": "Меню DoS атак",
         "parent_href": "main_menu_page",
-        "items": [
+        "entries": [
             *_COMMON_INTERFACE_ITEMS,
             _SCAN_ITEM,
             {
@@ -124,7 +124,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "handshake_tools",
         "title": "Меню инструментов для работы с рукопожатием",
         "parent_href": "main_menu_page",
-        "items": [
+        "entries": [
             *_COMMON_INTERFACE_ITEMS,
             {
                 "number": "4",
@@ -162,7 +162,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "decrypt",
         "title": "Меню офлайн расшифровки WPA/WPA2",
         "parent_href": "main_menu_page",
-        "items": [
+        "entries": [
             {"number": "0", "title": "Вернуться в главное меню", "kind": "link", "href": "main_menu_page", "icon": "bi-arrow-left"},
             {"number": "1", "title": "Personal", "kind": "link", "href": "menu_decrypt_personal", "icon": "bi-person"},
             {"number": "2", "title": "Enterprise", "kind": "link", "href": "menu_decrypt_enterprise", "icon": "bi-building"},
@@ -172,7 +172,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "decrypt_personal",
         "title": "Personal — офлайн расшифровка",
         "parent_href": "menu_decrypt",
-        "items": [
+        "entries": [
             {"number": "0", "title": "Вернуться в меню расшифровки", "kind": "link", "href": "menu_decrypt", "icon": "bi-arrow-left"},
             {
                 "number": "1",
@@ -230,7 +230,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "decrypt_enterprise",
         "title": "Enterprise — офлайн расшифровка",
         "parent_href": "menu_decrypt",
-        "items": [
+        "entries": [
             {"number": "0", "title": "Вернуться в меню расшифровки", "kind": "link", "href": "menu_decrypt", "icon": "bi-arrow-left"},
             {
                 "number": "1",
@@ -300,7 +300,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "evil_twin",
         "title": "Меню атак Злой Двойник",
         "parent_href": "main_menu_page",
-        "items": [
+        "entries": [
             *_COMMON_INTERFACE_ITEMS,
             _SCAN_ITEM,
             {
@@ -374,7 +374,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "wps_attacks",
         "title": "Меню атак на WPS",
         "parent_href": "main_menu_page",
-        "items": [
+        "entries": [
             *_COMMON_INTERFACE_ITEMS,
             {
                 "number": "4",
@@ -501,7 +501,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "wep_attacks",
         "title": "Меню атак на WEP",
         "parent_href": "main_menu_page",
-        "items": [
+        "entries": [
             *_COMMON_INTERFACE_ITEMS,
             {
                 "number": "4",
@@ -531,7 +531,7 @@ MENUS: dict[str, dict[str, Any]] = {
         "slug": "enterprise_attacks",
         "title": "Меню Enterprise атак",
         "parent_href": "main_menu_page",
-        "items": [
+        "entries": [
             *_COMMON_INTERFACE_ITEMS,
             {
                 "number": "4",

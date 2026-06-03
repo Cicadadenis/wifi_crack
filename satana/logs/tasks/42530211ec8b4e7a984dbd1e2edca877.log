@@ -1,0 +1,3 @@
+[2026-06-03T03:28:45Z] task queued: monitor_mode
+[2026-06-03T03:28:45Z] task started: monitor_mode
+[params] {"interface": "eth0"}

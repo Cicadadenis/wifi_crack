@@ -16,7 +16,7 @@
   <div class="terminal-prompt">Выбор опции из меню:</div>
 
   <div class="satana-menu-grid">
-    {% for item in menu.items %}
+    {% for item in menu.entries %}
       {% if item.kind == "link" %}
         <a class="satana-menu-item" href="{{ url_for(item.href) }}">
           <span class="menu-number">{{ item.number }}.</span>

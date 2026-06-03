@@ -20,6 +20,33 @@ Arguments after `cli` are passed to `satana.sh`.
 
 ## Run Web UI
 
+### Dependencies (Debian / Kali / WSL)
+
+On systems with PEP 668 (`externally-managed-environment`), prefer **apt** or a **venv** instead of `pip install` into system Python.
+
+**Option A — apt (simplest on Kali/Debian):**
+
+```bash
+sudo apt update
+sudo apt install python3-flask python3-flask-socketio python3-psutil
+```
+
+**Option B — virtualenv (recommended if apt packages are missing or too old):**
+
+```bash
+bash setup-web.sh
+source .venv-web/bin/activate
+sudo -E ./satana-web
+```
+
+If `pip install flask` fails with `Cannot uninstall blinker`, do not use `--break-system-packages` on the system Python; use apt or `setup-web.sh` instead.
+
+**BeEF** (Evil Twin / browser attacks): full install runs `scripts/install-beef.sh` (clone to `/opt/beef`, `bundle install`). Manual run:
+
+```bash
+sudo ./scripts/install-beef.sh
+```
+
 ```bash
 ./satana-web
 ```

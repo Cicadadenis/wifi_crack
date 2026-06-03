@@ -1,0 +1,56 @@
+[2026-06-03T03:28:55Z] task queued: list_interfaces
+[2026-06-03T03:28:55Z] task started: list_interfaces
+[stdout]
+{
+  "interfaces": [
+    {
+      "name": "br-c27d0fd0d8d1",
+      "mode": "ethernet",
+      "state": "up",
+      "mac": "12:51:66:df:67:99",
+      "ipv4": "172.19.0.1",
+      "up": true
+    },
+    {
+      "name": "docker0",
+      "mode": "ethernet",
+      "state": "down",
+      "mac": "d6:5d:a8:a7:32:f8",
+      "ipv4": "172.17.0.1",
+      "up": false
+    },
+    {
+      "name": "eth0",
+      "mode": "ethernet",
+      "state": "up",
+      "mac": "00:15:5d:59:b6:95",
+      "ipv4": "172.18.93.160",
+      "up": true
+    },
+    {
+      "name": "lo",
+      "mode": "ethernet",
+      "state": "unknown",
+      "mac": "00:00:00:00:00:00",
+      "ipv4": "127.0.0.1",
+      "up": false
+    },
+    {
+      "name": "veth092ba6d",
+      "mode": "ethernet",
+      "state": "up",
+      "mac": "56:91:eb:33:e1:55",
+      "ipv4": "-",
+      "up": true
+    },
+    {
+      "name": "vetha0f80a9",
+      "mode": "ethernet",
+      "state": "up",
+      "mac": "52:5e:0d:cf:26:a3",
+      "ipv4": "-",
+      "up": true
+    }
+  ]
+}
+[2026-06-03T03:28:55Z] task finished: success (exit=0)
