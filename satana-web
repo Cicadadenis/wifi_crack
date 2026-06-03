@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SATANA_HOME="${SATANA_HOME:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+export SATANA_HOME
+
+cd "${SATANA_HOME}"
+exec python3 satana.py web "$@"

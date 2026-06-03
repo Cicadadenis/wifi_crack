@@ -1,0 +1,2 @@
+"""SATANA CLI compatibility package."""
+

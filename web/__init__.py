@@ -1,0 +1,2 @@
+"""SATANA Web UI package."""
+

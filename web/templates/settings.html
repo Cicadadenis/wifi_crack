@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-2">Settings</h1>
+<div class="text-secondary mb-4">Saved in {{ config_path }}</div>
+{% if saved %}
+  <div class="alert alert-success">Settings saved</div>
+{% endif %}
+<form method="post" class="metric rounded-2 p-3">
+  <div class="row g-3">
+    <div class="col-md-6">
+      <label class="form-label" for="project_name">Project name</label>
+      <input class="form-control" id="project_name" name="project_name" value="{{ config.project.name }}">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="username">Web username</label>
+      <input class="form-control" id="username" name="username" value="{{ config.auth.username }}">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="password">New password</label>
+      <input class="form-control" id="password" name="password" type="password" autocomplete="new-password">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label" for="refresh_interval">Refresh interval, ms</label>
+      <input class="form-control" id="refresh_interval" name="refresh_interval" type="number" min="1000" value="{{ config.ui.refresh_interval }}">
+    </div>
+    <div class="col-md-8">
+      <label class="form-label" for="host">Host</label>
+      <input class="form-control" id="host" name="host" value="{{ config.server.host }}">
+    </div>
+    <div class="col-md-4">
+      <label class="form-label" for="port">Port</label>
+      <input class="form-control" id="port" name="port" type="number" min="1" max="65535" value="{{ config.server.port }}">
+    </div>
+  </div>
+  <button class="btn btn-primary mt-4" type="submit">Save</button>
+</form>
+{% endblock %}
+

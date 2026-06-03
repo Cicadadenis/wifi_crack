@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading mb-4">
+  <div>
+    <h1>Reports</h1>
+    <p>Search saved reports by name, open them in the browser or download a copy.</p>
+  </div>
+  <form class="search-box" method="get">
+    <i class="bi bi-search"></i>
+    <input class="form-control" type="search" name="q" value="{{ query }}" placeholder="Search by name">
+  </form>
+</div>
+
+<section class="panel">
+  <div class="table-responsive">
+    <table class="table audit-table align-middle mb-0">
+      <thead><tr><th>Report</th><th>Size</th><th>Date</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+        {% for report in reports %}
+        <tr>
+          <td>
+            <div class="fw-semibold">{{ report.name }}</div>
+            <div class="text-secondary small">satana/reports</div>
+          </td>
+          <td>{{ report.size }} B</td>
+          <td class="text-secondary">{{ report.modified }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-light" href="{{ url_for('report_view', name=report.name) }}"><i class="bi bi-box-arrow-up-right"></i> Open</a>
+            <a class="btn btn-sm btn-outline-info" href="{{ url_for('api.api_report_download', name=report.name) }}"><i class="bi bi-download"></i> Download</a>
+            <button class="btn btn-sm btn-outline-danger" type="button" onclick="deleteReport('{{ report.name }}')"><i class="bi bi-trash"></i></button>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" class="empty-state">No reports found</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

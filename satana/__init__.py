@@ -1,0 +1,2 @@
+"""SATANA Python package."""
+

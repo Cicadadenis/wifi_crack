@@ -1,0 +1,26 @@
+# Python / Web
+.venv-web/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Local config & secrets
+.env
+satana/config/web.json
+
+# Logs & runtime
+satana/logs/
+web/logs/
+*.log
+
+# Large wordlists (add locally; GitHub limit 100 MB per file)
+passwords/rockyou.txt
+passwords/10Mpass.txt
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

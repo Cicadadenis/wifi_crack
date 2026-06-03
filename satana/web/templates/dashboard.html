@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading mb-4">
+  <div>
+    <h1>Wi-Fi Audit Dashboard</h1>
+    <p>System health, adapter inventory, plugin state, reports and task activity.</p>
+  </div>
+  <span class="badge status-badge status-success"><i class="bi bi-activity"></i>Web online</span>
+</div>
+
+<section class="quick-actions mb-4">
+  <div class="section-title">
+    <h2>Quick Actions</h2>
+    <span class="text-secondary small">Safe allowlisted tasks only</span>
+  </div>
+  <div class="action-grid">
+    <button class="action-btn" type="button" onclick="runTask('system_status')"><i class="bi bi-heart-pulse"></i>Проверить систему</button>
+    <button class="action-btn" type="button" onclick="runTask('check_dependencies')"><i class="bi bi-check2-circle"></i>Проверить зависимости</button>
+    <button class="action-btn" type="button" onclick="runTask('list_interfaces')"><i class="bi bi-arrow-repeat"></i>Обновить интерфейсы</button>
+    <button class="action-btn" type="button" onclick="runTask('list_plugins')"><i class="bi bi-puzzle"></i>Проверить плагины</button>
+    <button class="action-btn" type="button" onclick="runTask('tail_logs')"><i class="bi bi-terminal"></i>Показать логи</button>
+    <button class="action-btn" type="button" onclick="runTask('list_reports')"><i class="bi bi-folder2-open"></i>Открыть отчёты</button>
+  </div>
+</section>
+
+<div class="dashboard-grid mb-4">
+  <article class="audit-card">
+    <div class="audit-card-head">
+      <span class="card-icon"><i class="bi bi-heart-pulse"></i></span>
+      <span class="badge status-badge status-success">Healthy</span>
+    </div>
+    <h2>System Health</h2>
+    <p>CPU <strong id="cpu-load">{{ status.cpu.percent }}%</strong>, RAM <strong id="ram-load">{{ status.memory.percent }}%</strong>, uptime <strong id="uptime">{{ status.uptime }}</strong>.</p>
+    <button class="btn btn-accent btn-sm" type="button" onclick="runTask('system_status')">Run check</button>
+  </article>
+
+  <article class="audit-card">
+    <div class="audit-card-head">
+      <span class="card-icon"><i class="bi bi-router"></i></span>
+      <span class="badge status-badge status-info" id="interface-count">{{ status.interfaces|length }} found</span>
+    </div>
+    <h2>Interfaces</h2>
+    <p>Adapter inventory with mode, state, MAC address and IPv4 visibility.</p>
+    <button class="btn btn-accent btn-sm" type="button" onclick="runTask('list_interfaces')">Refresh</button>
+  </article>
+
+  <article class="audit-card">
+    <div class="audit-card-head">
+      <span class="card-icon"><i class="bi bi-puzzle"></i></span>
+      <span class="badge status-badge status-info">{{ status.plugins|length }} loaded</span>
+    </div>
+    <h2>Plugins</h2>
+    <p>Review enabled and disabled plugins without launching plugin actions from the browser.</p>
+    <button class="btn btn-accent btn-sm" type="button" onclick="runTask('list_plugins')">Check plugins</button>
+  </article>
+
+  <article class="audit-card">
+    <div class="audit-card-head">
+      <span class="card-icon"><i class="bi bi-file-earmark-text"></i></span>
+      <span class="badge status-badge status-info">{{ reports|length }} reports</span>
+    </div>
+    <h2>Reports</h2>
+    <p>Open, search and download saved audit reports from the reports workspace.</p>
+    <a class="btn btn-accent btn-sm" href="{{ url_for('reports_page') }}">Open reports</a>
+  </article>
+
+  <article class="audit-card">
+    <div class="audit-card-head">
+      <span class="card-icon"><i class="bi bi-clock-history"></i></span>
+      {% set last_task = tasks[0] if tasks else none %}
+      <span class="badge status-badge status-{{ last_task.status if last_task else 'muted' }}">{{ last_task.status if last_task else 'Idle' }}</span>
+    </div>
+    <h2>Last Task</h2>
+    <p>{{ last_task.task if last_task else 'No task has been run yet.' }}</p>
+    <a class="btn btn-accent btn-sm" href="{{ url_for('logs_page') }}">Open log</a>
+  </article>
+
+  <article class="audit-card">
+    <div class="audit-card-head">
+      <span class="card-icon"><i class="bi bi-terminal"></i></span>
+      <span class="badge status-badge status-success">Live</span>
+    </div>
+    <h2>Logs</h2>
+    <p>Live WebSocket stream for project logs and task output.</p>
+    <button class="btn btn-accent btn-sm" type="button" onclick="runTask('tail_logs')">Tail logs</button>
+  </article>
+</div>
+
+<div class="row g-3">
+  <div class="col-xl-5">
+    <section class="panel h-100">
+      <div class="section-title">
+        <h2>Live Activity</h2>
+        <button class="btn btn-sm btn-outline-light" type="button" onclick="refreshTasks()">Refresh</button>
+      </div>
+      <div class="activity-list" id="task-list">
+        {% for task in tasks %}
+          <button class="activity-item" type="button" onclick="showTask('{{ task.id }}')">
+            <span class="activity-main">
+              <strong>{{ task.task }}</strong>
+              <small>{{ task.created_at }}</small>
+            </span>
+            <span class="badge status-badge status-{{ task.status }}">{{ task.status }}</span>
+          </button>
+        {% else %}
+          <div class="empty-state">No tasks yet</div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+  <div class="col-xl-7">
+    <section class="panel">
+      <div class="section-title">
+        <h2>Task Log</h2>
+        <span class="badge status-badge status-muted" id="task-status">No task</span>
+      </div>
+      <pre class="terminal-box" id="task-logs"></pre>
+    </section>
+  </div>
+</div>
+{% endblock %}

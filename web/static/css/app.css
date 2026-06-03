@@ -1,0 +1,76 @@
+:root {
+  color-scheme: dark;
+}
+
+body {
+  min-height: 100vh;
+  background: #101418;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: #151b22;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar .nav-link {
+  color: #c6d0da;
+  border-radius: 0.4rem;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+  color: #ffffff;
+  background: #26313d;
+}
+
+.metric {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #151b22;
+}
+
+.log-box {
+  height: 360px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 0.875rem;
+  background: #080b0f;
+}
+
+.table-dark {
+  --bs-table-bg: #151b22;
+  --bs-table-striped-bg: #1b232c;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+}
+
+.status-up {
+  background: #39d98a;
+}
+
+.status-down {
+  background: #ff6b6b;
+}
+
+@media (max-width: 767.98px) {
+  .sidebar {
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .log-box {
+    height: 260px;
+  }
+}
+
