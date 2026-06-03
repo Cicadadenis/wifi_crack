@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading mb-4">
+  <div>
+    <h1>Logs</h1>
+    <p>Live task output with client-side filtering and terminal controls.</p>
+  </div>
+  <button class="btn btn-accent" type="button" onclick="runTask('tail_logs')"><i class="bi bi-terminal"></i> Show latest logs</button>
+</div>
+
+<div class="row g-3">
+  <div class="col-xl-4">
+    <section class="panel h-100">
+      <div class="section-title">
+        <h2>Tasks</h2>
+        <select class="form-select form-select-sm task-filter" id="task-filter" onchange="applyTaskFilter()">
+          <option value="all">All</option>
+          <option value="success">Success</option>
+          <option value="failed">Failed</option>
+          <option value="running">Running</option>
+        </select>
+      </div>
+      <div class="activity-list" id="task-list">
+        {% for task in tasks[:30] %}
+          <button class="activity-item" data-status="{{ task.status }}" type="button" onclick="showTask('{{ task.id }}')">
+            <span class="activity-main">
+              <strong>{{ task.task }}</strong>
+              <small>{{ task.created_at }}</small>
+            </span>
+            <span class="badge status-badge status-{{ task.status }}">{{ task.status }}</span>
+          </button>
+        {% else %}
+          <div class="empty-state">No tasks yet</div>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+  <div class="col-xl-8">
+    <section class="panel">
+      <div class="section-title">
+        <div>
+          <h2>Terminal</h2>
+          <span class="badge status-badge status-muted" id="task-status">No task</span>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-outline-light" type="button" onclick="clearTaskScreen()"><i class="bi bi-eraser"></i> Clear</button>
+          <button class="btn btn-sm btn-outline-light" type="button" onclick="copyTaskLog()"><i class="bi bi-copy"></i> Copy</button>
+        </div>
+      </div>
+      <pre class="terminal-box terminal-large" id="task-logs">{{ task_logs|join('\n') }}</pre>
+    </section>
+  </div>
+</div>
+{% endblock %}

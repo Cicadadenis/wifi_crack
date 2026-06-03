@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading mb-4">
+  <div>
+    <h1>Interfaces</h1>
+    <p>Выберите интерфейс для атак и режимов monitor/managed. Выбран: <strong>{{ selected_interface }}</strong></p>
+  </div>
+  <button class="btn btn-accent" type="button" onclick="runTask('list_interfaces')"><i class="bi bi-arrow-repeat"></i> Обновить</button>
+</div>
+
+<div class="interface-grid mb-4">
+  {% for item in interfaces %}
+  <article class="interface-card">
+    <div class="audit-card-head">
+      <span class="card-icon"><i class="bi {{ 'bi-wifi' if item.mode == 'wireless' else 'bi-ethernet' }}"></i></span>
+      <span class="badge status-badge {{ 'status-success' if item.up else 'status-failed' }}">{{ 'UP' if item.up else 'DOWN' }}</span>
+    </div>
+    <h2>{{ item.name }}</h2>
+    <dl class="detail-list">
+      <div><dt>Type</dt><dd>{{ item.mode }}</dd></div>
+      <div><dt>State</dt><dd>{{ item.state }}</dd></div>
+      <div><dt>IPv4</dt><dd>{{ item.ipv4 }}</dd></div>
+      <div><dt>MAC</dt><dd>{{ item.mac }}</dd></div>
+    </dl>
+    <button
+      class="btn btn-sm btn-accent w-100 mt-3"
+      type="button"
+      onclick="selectInterface('{{ item.name }}')"
+      {{ 'disabled' if item.name == selected_interface else '' }}
+    >
+      {{ 'Выбран' if item.name == selected_interface else 'Выбрать' }}
+    </button>
+  </article>
+  {% else %}
+  <div class="empty-state">No network adapters found</div>
+  {% endfor %}
+</div>
+
+<section class="panel">
+  <div class="section-title">
+    <h2>Task Output</h2>
+    <span class="badge status-badge status-muted" id="task-status">No task</span>
+  </div>
+  <pre class="terminal-box" id="task-logs"></pre>
+</section>
+{% endblock %}

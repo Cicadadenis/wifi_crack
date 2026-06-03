@@ -1,0 +1,26 @@
+{
+  "2b95f0bde31c4b02a2522cf10d3f5003": {
+    "id": "2b95f0bde31c4b02a2522cf10d3f5003",
+    "task": "list_interfaces",
+    "status": "success",
+    "requested_by": "web",
+    "created_at": "2026-06-03T02:30:28Z",
+    "updated_at": "2026-06-03T02:30:28Z",
+    "started_at": "2026-06-03T02:30:28Z",
+    "finished_at": "2026-06-03T02:30:28Z",
+    "return_code": 0,
+    "log_path": "satana/logs/tasks/2b95f0bde31c4b02a2522cf10d3f5003.log"
+  },
+  "caa4bc4ac62a43019527b8a66c8bd6c9": {
+    "id": "caa4bc4ac62a43019527b8a66c8bd6c9",
+    "task": "list_interfaces",
+    "status": "success",
+    "requested_by": "web",
+    "created_at": "2026-06-03T02:30:52Z",
+    "updated_at": "2026-06-03T02:30:52Z",
+    "started_at": "2026-06-03T02:30:52Z",
+    "finished_at": "2026-06-03T02:30:52Z",
+    "return_code": 0,
+    "log_path": "satana/logs/tasks/caa4bc4ac62a43019527b8a66c8bd6c9.log"
+  }
+}

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading mb-4">
+  <div>
+    <h1>{{ menu.title }}</h1>
+    <p>Веб-версия меню SATANA. Интерфейс: <strong>{{ interface_name }}</strong></p>
+  </div>
+  <a class="btn btn-outline-secondary" href="{{ url_for(menu.parent_href) }}"><i class="bi bi-arrow-left"></i> Назад</a>
+</div>
+
+<section class="satana-menu-shell mb-4">
+  <div class="terminal-title">***************************** {{ menu.title }} ******************************</div>
+  <div class="terminal-selected">
+    Интерфейс <strong>{{ interface_name }}</strong> выбран. Режим: <strong>({{ interface_mode }})</strong>
+  </div>
+  <div class="terminal-prompt">Выбор опции из меню:</div>
+
+  <div class="satana-menu-grid">
+    {% for item in menu.items %}
+      {% if item.kind == "link" %}
+        <a class="satana-menu-item" href="{{ url_for(item.href) }}">
+          <span class="menu-number">{{ item.number }}.</span>
+          <span class="menu-icon"><i class="bi {{ item.icon }}"></i></span>
+          <span class="menu-label">{{ item.title }}</span>
+          <span class="menu-state state-ready">Открыть</span>
+        </a>
+      {% elif item.kind == "action" %}
+        <button
+          class="satana-menu-item"
+          type="button"
+          data-action="{{ item.action }}"
+          data-needs-interface="{{ 'true' if item.needs_interface else 'false' }}"
+          data-fields='{{ (item.fields or []) | tojson }}'
+          data-title="{{ item.title }}"
+          onclick="openActionModal(this)"
+        >
+          <span class="menu-number">{{ item.number }}.</span>
+          <span class="menu-icon"><i class="bi {{ item.icon }}"></i></span>
+          <span class="menu-label">{{ item.title }}</span>
+          <span class="menu-state state-ready">Запуск</span>
+        </button>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<div class="row g-3">
+  <div class="col-12">
+    <section class="panel">
+      <div class="section-title">
+        <h2>Лог задачи</h2>
+        <span class="badge status-badge status-muted" id="task-status">No task</span>
+      </div>
+      <pre class="terminal-box" id="task-logs"></pre>
+    </section>
+  </div>
+</div>
+
+<div class="modal fade" id="actionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content bg-dark border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title" id="actionModalTitle">Запуск действия</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="action-form">
+          <input type="hidden" name="action" id="action-name">
+          <div id="action-fields"></div>
+        </form>
+      </div>
+      <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-accent" onclick="submitAction()">Запустить</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

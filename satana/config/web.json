@@ -1,0 +1,25 @@
+{
+  "auth": {
+    "username": "admin",
+    "password_hash": "scrypt:32768:8:1$XYt54XKg5KDLVy2A$fd3ec4278e77326c61d5cf45564431c2eaaa8708b859828823a80c4033a9024baee11120701010af4723ea6e48f912338555c900209cabfcacf206441c257b0c"
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8080,
+    "debug": false
+  },
+  "project": {
+    "name": "SATANA",
+    "cli_path": "satana.sh",
+    "logs": [
+      "satana/logs/web/satana-web.log",
+      "satana-debug.log",
+      "web/logs/satana-web.log"
+    ]
+  },
+  "ui": {
+    "theme": "dark",
+    "refresh_interval": 5000
+  },
+  "secret_key": "cf166cd33203ffb680dda583843f1c9c4ab0ad6136d964026d2866cef99d3b33"
+}

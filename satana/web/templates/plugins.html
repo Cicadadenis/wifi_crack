@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-heading mb-4">
+  <div>
+    <h1>Plugins</h1>
+    <p>Plugin inventory and enabled state. Unknown plugin execution from the browser is not available.</p>
+  </div>
+  <button class="btn btn-accent" type="button" onclick="runTask('list_plugins')"><i class="bi bi-puzzle"></i> Проверить плагины</button>
+</div>
+
+<div class="plugin-grid mb-4">
+  {% for plugin in plugins %}
+  <article class="plugin-card">
+    <div class="audit-card-head">
+      <span class="card-icon"><i class="bi bi-puzzle"></i></span>
+      <span class="badge status-badge {{ 'status-success' if plugin.enabled else 'status-muted' }}">{{ 'enabled' if plugin.enabled else 'disabled' }}</span>
+    </div>
+    <h2>{{ plugin.name }}</h2>
+    <p>{{ plugin.description or 'No description available.' }}</p>
+    <div class="plugin-meta">
+      <span><i class="bi bi-file-code"></i>{{ plugin.file }}</span>
+      <span><i class="bi bi-person"></i>{{ plugin.author or 'unknown' }}</span>
+    </div>
+    <div class="form-check form-switch mt-3">
+      <input class="form-check-input" type="checkbox" role="switch"
+        {% if plugin.enabled %}checked{% endif %}
+        onchange="togglePlugin('{{ plugin.file }}', this.checked)">
+      <label class="form-check-label">Enabled</label>
+    </div>
+  </article>
+  {% else %}
+  <div class="empty-state">No plugins found</div>
+  {% endfor %}
+</div>
+
+<section class="panel">
+  <div class="section-title">
+    <h2>Task Output</h2>
+    <span class="badge status-badge status-muted" id="task-status">No task</span>
+  </div>
+  <pre class="terminal-box" id="task-logs"></pre>
+</section>
+{% endblock %}

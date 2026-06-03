@@ -1,0 +1,40 @@
+[2026-06-03T02:30:28Z] task queued: list_interfaces
+[2026-06-03T02:30:28Z] task started: list_interfaces
+[stdout]
+{
+  "interfaces": [
+    {
+      "name": "eth0",
+      "mode": "ethernet",
+      "state": "down",
+      "mac": "dc:fe:07:10:4f:6e",
+      "ipv4": "-",
+      "up": false
+    },
+    {
+      "name": "lo",
+      "mode": "ethernet",
+      "state": "unknown",
+      "mac": "00:00:00:00:00:00",
+      "ipv4": "127.0.0.1",
+      "up": false
+    },
+    {
+      "name": "wlan0",
+      "mode": "wireless",
+      "state": "up",
+      "mac": "10:4a:7d:ce:95:c3",
+      "ipv4": "192.168.31.165",
+      "up": true
+    },
+    {
+      "name": "wwan0",
+      "mode": "ethernet",
+      "state": "down",
+      "mac": "1e:46:dc:41:58:98",
+      "ipv4": "-",
+      "up": false
+    }
+  ]
+}
+[2026-06-03T02:30:28Z] task finished: success (exit=0)

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
+  <div>
+    <h1 class="h3 mb-1">Dashboard</h1>
+    <div class="text-secondary">System status and live logs</div>
+  </div>
+  <span class="badge text-bg-success">Web online</span>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-xl-3">
+    <div class="metric rounded-2 p-3">
+      <div class="text-secondary small">CPU</div>
+      <div class="h3 mb-0" id="cpu-load">{{ status.cpu.percent }}%</div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="metric rounded-2 p-3">
+      <div class="text-secondary small">RAM</div>
+      <div class="h3 mb-0" id="ram-load">{{ status.memory.percent }}%</div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="metric rounded-2 p-3">
+      <div class="text-secondary small">Interfaces</div>
+      <div class="h3 mb-0" id="interface-count">{{ status.interfaces|length }}</div>
+    </div>
+  </div>
+  <div class="col-6 col-xl-3">
+    <div class="metric rounded-2 p-3">
+      <div class="text-secondary small">Uptime</div>
+      <div class="h3 mb-0" id="uptime">{{ status.uptime }}</div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-xl-5">
+    <div class="metric rounded-2 p-3 h-100">
+      <h2 class="h5 mb-3">Interfaces</h2>
+      <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle mb-0">
+          <thead><tr><th>Name</th><th>Mode</th><th>State</th></tr></thead>
+          <tbody>
+            {% for item in status.interfaces %}
+            <tr>
+              <td>{{ item.name }}</td>
+              <td>{{ item.mode }}</td>
+              <td><span class="status-dot {{ 'status-up' if item.up else 'status-down' }}"></span>{{ item.state }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" class="text-secondary">No interfaces found</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-7">
+    <div class="metric rounded-2 p-3">
+      <h2 class="h5 mb-3">Logs</h2>
+      <pre class="log-box rounded-2 p-3 mb-0" id="live-logs">{{ status.logs|join('\n') }}</pre>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

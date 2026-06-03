@@ -1,0 +1,24 @@
+{
+  "auth": {
+    "username": "admin",
+    "password_hash": ""
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8080,
+    "debug": false
+  },
+  "project": {
+    "name": "SATANA",
+    "cli_path": "satana.sh",
+    "logs": [
+      "web/logs/satana-web.log",
+      "satana-debug.log"
+    ]
+  },
+  "ui": {
+    "theme": "dark",
+    "refresh_interval": 5000
+  },
+  "secret_key": ""
+}

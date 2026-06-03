@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-4">API Documentation</h1>
+<div class="metric rounded-2 p-3">
+  <div class="table-responsive">
+    <table class="table table-dark table-striped align-middle mb-0">
+      <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>GET</td><td><code>/api/status</code></td><td>System status, CPU/RAM, interfaces, plugins and logs</td></tr>
+        <tr><td>GET</td><td><code>/api/interfaces</code></td><td>Network adapter list</td></tr>
+        <tr><td>GET</td><td><code>/api/plugins</code></td><td>Plugin list and metadata</td></tr>
+        <tr><td>POST</td><td><code>/api/plugins/&lt;file&gt;/toggle</code></td><td>Enable or disable a plugin</td></tr>
+        <tr><td>GET</td><td><code>/api/reports?q=term</code></td><td>Search reports</td></tr>
+        <tr><td>GET</td><td><code>/api/reports/&lt;name&gt;</code></td><td>Download report</td></tr>
+        <tr><td>DELETE</td><td><code>/api/reports/&lt;name&gt;</code></td><td>Delete report</td></tr>
+        <tr><td>GET</td><td><code>/api/settings</code></td><td>Read settings without password hash</td></tr>
+        <tr><td>PUT</td><td><code>/api/settings</code></td><td>Update settings JSON</td></tr>
+        <tr><td>GET</td><td><code>/api/logs?lines=120</code></td><td>Read latest logs</td></tr>
+        <tr><td>GET</td><td><code>/api/tasks</code></td><td>List safe task history</td></tr>
+        <tr><td>GET</td><td><code>/api/tasks/&lt;task_id&gt;</code></td><td>Read task status and logs</td></tr>
+        <tr><td>POST</td><td><code>/api/tasks/run</code></td><td>Run an allowlisted safe task</td></tr>
+        <tr><td>WebSocket</td><td><code>/socket.io</code></td><td>Live events: <code>logs</code>, <code>task_logs</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
