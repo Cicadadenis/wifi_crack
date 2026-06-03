@@ -13354,7 +13354,7 @@ function env_vars_initialization() {
 
 	declare -gA nonboolean_options_env_vars
 	nonboolean_options_env_vars["${ordered_options_env_vars[9]},default_value"]="mdk4" #mdk_version
-	nonboolean_options_env_vars["${ordered_options_env_vars[13]},default_value"]="xterm" #windows_handling
+	nonboolean_options_env_vars["${ordered_options_env_vars[13]},default_value"]="tmux" #windows_handling
 
 	nonboolean_options_env_vars["${ordered_options_env_vars[9]},rcfile_text"]="#Available values: mdk3, mdk4 - Define which mdk version is going to be used - Default value ${nonboolean_options_env_vars[${ordered_options_env_vars[9]},'default_value']}"
 	nonboolean_options_env_vars["${ordered_options_env_vars[13]},rcfile_text"]="#Available values: xterm, tmux - Define the needed tool to be used for windows handling - Default value ${nonboolean_options_env_vars[${ordered_options_env_vars[13]},'default_value']}"
@@ -14466,8 +14466,6 @@ function main() {
 		fi
 		clear
 		language_strings "${language}" 86 "title"
-		language_strings "${language}" 7 "pink"
-		language_strings "${language}" 114 "pink"
 
 		if [ ${autochanged_language} -eq 1 ]; then
 			echo
@@ -14483,9 +14481,21 @@ function main() {
 				language_strings "${language}" 294 "blue"
 			else
 				if [ "${xterm_ok}" -eq 0 ]; then
-					language_strings "${language}" 476 "red"
-					exit_code=1
-					exit_script_option
+					if hash tmux 2> /dev/null; then
+						language_strings "${language}" 626 "yellow"
+						SATANA_WINDOWS_HANDLING="tmux"
+						export SATANA_WINDOWS_HANDLING
+						transfer_to_tmux
+						if ! check_inside_tmux; then
+							language_strings "${language}" 476 "red"
+							exit_code=1
+							exit_script_option
+						fi
+					else
+						language_strings "${language}" 476 "red"
+						exit_code=1
+						exit_script_option
+					fi
 				else
 					language_strings "${language}" 295 "red"
 					echo
