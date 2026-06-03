@@ -15,6 +15,10 @@ satana/logs/
 web/logs/
 *.log
 
+# Capture files (local only)
+*.cap
+*.pcap
+
 # Large wordlists (add locally; GitHub limit 100 MB per file)
 passwords/rockyou.txt
 passwords/10Mpass.txt

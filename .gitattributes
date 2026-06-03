@@ -1,0 +1,8 @@
+# Unix line endings for scripts (WSL/Linux)
+*.sh text eol=lf
+*.bash text eol=lf
+satana-web text eol=lf
+install text eol=lf
+
+# Default: normalize text, leave binaries alone
+* text=auto
