@@ -132,7 +132,7 @@ apt_install() {
 		crunch mdk4 hashcat hostapd isc-dhcp-server iptables
 		ettercap-text-only lighttpd dsniff reaver bully pixiewps
 		bettercap john ccze tmux net-tools wireless-tools
-		hashcat-utils
+		hashcat-utils hcxtools
 	)
 
 	local -a extra=(

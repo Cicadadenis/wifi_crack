@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 #Title........: language_strings.sh
 #Description..: All the translated strings that SATANA uses are located here.
 #Author.......: v1s1t0r
@@ -1062,7 +1062,7 @@ function language_strings() {
 
 	arr["RUSSIAN",435]="Ошибка при попытке изменить режим интерфейса. Во время этого процесса имя интерфейса должно быть изменено, но похоже, что у вас уже есть интерфейс, занимающий нужное имя (${normal_color}${desired_interface_name}${red_color})"
 
-	arr["RUSSIAN",436]="Установленная версия hashcat (${hashcat_version}) больше или равна ${hashcat_hccapx_version}, поэтому вам нужно конвертировать файлы захвата в формат \"hccapx\", SATANA сделает это автоматически. Для этого вам нужен конвертер, которого нет в вашей системе (пакет hashcat-utils), установите его, чтобы иметь возможность выполнить эту атаку"
+	arr["RUSSIAN",436]="Установленная версия hashcat (${hashcat_version}) больше или равна ${hashcat_hccapx_version}, поэтому нужна конвертация захвата (hccapx или 22000). Конвертер не найден. Установите: ${green_color}sudo apt install hashcat-utils hcxtools${normal_color} (достаточно пакета hcxtools с утилитой hcxpcapngtool)"
 
 	arr["RUSSIAN",437]="Если вам понравилась эта программа и она оказался для вас полезной, вы можете поддержать проект, сделав пожертвование. Доступны переводы через PayPal (${normal_color}${mail}${pink_color}) и криптовалюту (${normal_color}Bitcoin, Ethereum, Litecoin...${pink_color}). Приветствуется любая сумма, даже небольшая (1, 2, 5 $/€). Более подробную информацию и прямые ссылки можно получить по адресу: ${normal_color}${urlgithub_wiki}/Contributing"
 
@@ -1527,6 +1527,10 @@ function language_strings() {
 	arr["RUSSIAN",667]="Выберите словарь из библиотеки:"
 
 	arr["RUSSIAN",668]="Выбран словарь из библиотеки: ${pink_color}${DICTIONARY}${normal_color}"
+
+	arr["RUSSIAN",669]="*Подсказка* Положите словарь в папку ${pink_color}passwords/${normal_color} (рядом с satana.sh) — он появится в списке автоматически. Файлы ${pink_color}.txt .lst .dic${normal_color} из корня проекта копируются сюда при открытии меню"
+
+	arr["RUSSIAN",670]="Не удалось извлечь хеш из файла захвата для hashcat ${hashcat_version} (режим ${hashcat_wpa_mode}). Проверьте, что в .cap есть ${pink_color}4-way handshake${normal_color} для выбранной BSSID: ${pink_color}aircrack-ng ваш.cap${normal_color}"
 
 	case "${3}" in
 		"yellow")

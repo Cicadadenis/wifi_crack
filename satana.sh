@@ -147,14 +147,20 @@ aircrack_pot_tmp="${aircrack_tmp_simple_name_file}.pot"
 #hashcat vars
 hashcat3_version="3.0"
 hashcat4_version="4.0.0"
+hashcat6_version="6.0.0"
 hashcat_hccapx_version="3.40"
+hashcat_wpa_mode="22000"
 hashcat_tmp_simple_name_file="hctmp"
 hashcat_tmp_file="${hashcat_tmp_simple_name_file}.hccap"
 hashcat_pot_tmp="${hashcat_tmp_simple_name_file}.pot"
 hashcat_output_file="${hashcat_tmp_simple_name_file}.out"
 hccapx_tool="cap2hccapx"
+hcxpcapng_tool="hcxpcapngtool"
 possible_hccapx_converter_known_locations=(
+										"/usr/bin/${hccapx_tool}"
+										"/usr/bin/${hccapx_tool}.bin"
 										"/usr/lib/hashcat-utils/${hccapx_tool}.bin"
+										"/usr/lib/hashcat-utils/${hccapx_tool}"
 									)
 
 #john the ripper vars
@@ -6046,6 +6052,70 @@ function ask_dictionary() {
 	language_strings "${language}" 181 "yellow"
 }
 
+#True if file should appear in the passwords library menu
+function is_passwords_library_dictionary() {
+
+	local dict_file="${1}"
+	local dict_basename dict_ext dict_size
+
+	dict_basename=$(basename "${dict_file}")
+	dict_ext="${dict_basename##*.}"
+	if [[ "${dict_basename}" == "${dict_ext}" ]]; then
+		dict_ext=""
+	else
+		dict_ext="${dict_ext,,}"
+	fi
+
+	case "${dict_basename,,}" in
+		readme*|license*|changelog*|*.md|.gitkeep|.gitignore|.library_ignore)
+			return 1
+		;;
+	esac
+
+	case "${dict_ext}" in
+		md|json|sh|bash|cap|pcap|hccapx|22000|log|db|zip|gz|bz2|xz|7z|exe|dll|py|html|css|js)
+			return 1
+		;;
+		txt|lst|dic|wordlist|pass|pwd|words|dict)
+			return 0
+		;;
+	esac
+
+	if [ -z "${dict_ext}" ]; then
+		dict_size=$(stat -c%s "${dict_file}" 2> /dev/null || echo 0)
+		if [ "${dict_size}" -ge 64 ]; then
+			return 0
+		fi
+	fi
+
+	return 1
+}
+
+#Ensure passwords/ exists and copy new wordlists from project root into it
+function sync_passwords_library_auto() {
+
+	debug_print
+
+	local lib_dir src_file dest_file dict_basename
+
+	lib_dir=$(resolve_passwords_library_dir 2> /dev/null) || {
+		lib_dir="${scriptfolder}passwords/"
+		mkdir -p "${lib_dir}" 2> /dev/null
+	}
+
+	for src_file in "${scriptfolder}"wifi_common_passwords.txt "${scriptfolder}"*.txt "${scriptfolder}"*.lst "${scriptfolder}"*.dic; do
+		[ -f "${src_file}" ] || continue
+		dict_basename=$(basename "${src_file}")
+		if ! is_passwords_library_dictionary "${src_file}"; then
+			continue
+		fi
+		dest_file="${lib_dir}${dict_basename}"
+		if [ ! -f "${dest_file}" ]; then
+			cp -n "${src_file}" "${dest_file}" 2> /dev/null
+		fi
+	done
+}
+
 #Resolve passwords library directory (project passwords/ or SATANA_PASSWORDS_DIR)
 function resolve_passwords_library_dir() {
 
@@ -6061,6 +6131,7 @@ function resolve_passwords_library_dir() {
 	fi
 
 	passwords_library_dir="${scriptfolder}passwords"
+	mkdir -p "${passwords_library_dir}" 2> /dev/null
 	if [ -d "${passwords_library_dir}" ]; then
 		[[ "${passwords_library_dir}" != */ ]] && passwords_library_dir="${passwords_library_dir}/"
 		echo "${passwords_library_dir}"
@@ -6075,7 +6146,10 @@ function select_dictionary_from_passwords_library() {
 
 	debug_print
 
-	local lib_dir
+	local lib_dir dict_entry
+
+	sync_passwords_library_auto
+
 	lib_dir=$(resolve_passwords_library_dir) || {
 		echo
 		language_strings "${language}" 664 "red"
@@ -6085,7 +6159,9 @@ function select_dictionary_from_passwords_library() {
 
 	declare -a dict_files=()
 	while IFS= read -r -d '' dict_entry; do
-		dict_files+=("${dict_entry}")
+		if is_passwords_library_dictionary "${dict_entry}"; then
+			dict_files+=("${dict_entry}")
+		fi
 	done < <(find "${lib_dir}" -maxdepth 1 -type f ! -name '.*' -print0 2> /dev/null | sort -z)
 
 	if [ ${#dict_files[@]} -eq 0 ]; then
@@ -6097,6 +6173,7 @@ function select_dictionary_from_passwords_library() {
 
 	echo
 	language_strings "${language}" 666 "blue"
+	language_strings "${language}" 669 "yellow"
 	echo
 
 	local option_counter=0
@@ -7628,7 +7705,7 @@ function exec_hashcat_dictionary_attack() {
 	debug_print
 
 	if [ "${1}" = "personal" ]; then
-		hashcat_cmd="hashcat -m 2500 -a 0 \"${tmpdir}${hashcat_tmp_file}\" \"${DICTIONARY}\" --potfile-disable -o \"${tmpdir}${hashcat_pot_tmp}\"${hashcat_cmd_fix} | tee \"${tmpdir}${hashcat_output_file}\" ${colorize}"
+		hashcat_cmd="hashcat -m ${hashcat_wpa_mode} -a 0 \"${tmpdir}${hashcat_tmp_file}\" \"${DICTIONARY}\" --potfile-disable -o \"${tmpdir}${hashcat_pot_tmp}\"${hashcat_cmd_fix} | tee \"${tmpdir}${hashcat_output_file}\" ${colorize}"
 	else
 		tmpfiles_toclean=1
 		rm -rf "${tmpdir}hctmp"* > /dev/null 2>&1
@@ -7644,7 +7721,7 @@ function exec_hashcat_bruteforce_attack() {
 	debug_print
 
 	if [ "${1}" = "personal" ]; then
-		hashcat_cmd="hashcat -m 2500 -a 3 \"${tmpdir}${hashcat_tmp_file}\" ${charset} --increment --increment-min=${minlength} --increment-max=${maxlength} --potfile-disable -o \"${tmpdir}${hashcat_pot_tmp}\"${hashcat_cmd_fix} | tee \"${tmpdir}${hashcat_output_file}\" ${colorize}"
+		hashcat_cmd="hashcat -m ${hashcat_wpa_mode} -a 3 \"${tmpdir}${hashcat_tmp_file}\" ${charset} --increment --increment-min=${minlength} --increment-max=${maxlength} --potfile-disable -o \"${tmpdir}${hashcat_pot_tmp}\"${hashcat_cmd_fix} | tee \"${tmpdir}${hashcat_output_file}\" ${colorize}"
 	else
 		tmpfiles_toclean=1
 		rm -rf "${tmpdir}hctmp"* > /dev/null 2>&1
@@ -7660,7 +7737,7 @@ function exec_hashcat_rulebased_attack() {
 	debug_print
 
 	if [ "${1}" = "personal" ]; then
-		hashcat_cmd="hashcat -m 2500 -a 0 \"${tmpdir}${hashcat_tmp_file}\" \"${DICTIONARY}\" -r \"${RULES}\" --potfile-disable -o \"${tmpdir}${hashcat_pot_tmp}\"${hashcat_cmd_fix} | tee \"${tmpdir}${hashcat_output_file}\" ${colorize}"
+		hashcat_cmd="hashcat -m ${hashcat_wpa_mode} -a 0 \"${tmpdir}${hashcat_tmp_file}\" \"${DICTIONARY}\" -r \"${RULES}\" --potfile-disable -o \"${tmpdir}${hashcat_pot_tmp}\"${hashcat_cmd_fix} | tee \"${tmpdir}${hashcat_output_file}\" ${colorize}"
 	else
 		tmpfiles_toclean=1
 		rm -rf "${tmpdir}hctmp"* > /dev/null 2>&1
@@ -10295,35 +10372,70 @@ function convert_cap_to_hashcat_format() {
 
 	tmpfiles_toclean=1
 	rm -rf "${tmpdir}hctmp"* > /dev/null 2>&1
+
+	if compare_floats_greater_or_equal "${hashcat_version}" "${hashcat6_version}"; then
+		hashcat_wpa_mode=22000
+		if hash ${hcxpcapng_tool} 2> /dev/null; then
+			if convert_cap_to_hashcat_22000_format; then
+				return 0
+			fi
+		fi
+		echo
+		language_strings "${language}" 670 "red"
+		language_strings "${language}" 436 "red"
+		language_strings "${language}" 115 "read"
+		return 1
+	fi
+
+	hashcat_wpa_mode=2500
 	if [ "${hccapx_needed}" -eq 0 ]; then
 		echo "1" | aircrack-ng "${enteredpath}" -J "${tmpdir}${hashcat_tmp_simple_name_file}" -b "${bssid}" > /dev/null 2>&1
+		hashcat_tmp_file="${hashcat_tmp_simple_name_file}.hccap"
 		return 0
-	else
-		hccapx_converter_found=0
-		if hash ${hccapx_tool} 2> /dev/null; then
-			hccapx_converter_found=1
-			hccapx_converter_path="${hccapx_tool}"
-		else
-			for item in "${possible_hccapx_converter_known_locations[@]}"; do
-				if [ -f "${item}" ]; then
-					hccapx_converter_found=1
-					hccapx_converter_path="${item}"
-					break
-				fi
-			done
-		fi
+	fi
 
-		if [ "${hccapx_converter_found}" -eq 1 ]; then
-			hashcat_tmp_file="${hashcat_tmp_simple_name_file}.hccapx"
-			"${hccapx_converter_path}" "${enteredpath}" "${tmpdir}${hashcat_tmp_file}" > /dev/null 2>&1
+	if hash ${hcxpcapng_tool} 2> /dev/null; then
+		if convert_cap_to_hashcat_22000_format; then
 			return 0
-		else
-			echo
-			language_strings "${language}" 436 "red"
-			language_strings "${language}" 115 "read"
-			return 1
 		fi
 	fi
+
+	hccapx_converter_found=0
+	if hash ${hccapx_tool} 2> /dev/null; then
+		hccapx_converter_found=1
+		hccapx_converter_path="${hccapx_tool}"
+	else
+		for item in "${possible_hccapx_converter_known_locations[@]}"; do
+			if [ -f "${item}" ]; then
+				hccapx_converter_found=1
+				hccapx_converter_path="${item}"
+				break
+			fi
+		done
+	fi
+
+	if [ "${hccapx_converter_found}" -eq 1 ]; then
+		hashcat_tmp_file="${hashcat_tmp_simple_name_file}.hccapx"
+		"${hccapx_converter_path}" "${enteredpath}" "${tmpdir}${hashcat_tmp_file}" > /dev/null 2>&1
+		if [ -s "${tmpdir}${hashcat_tmp_file}" ]; then
+			hashcat_wpa_mode=2500
+			return 0
+		fi
+	fi
+
+	if hash ${hcxpcapng_tool} 2> /dev/null; then
+		hashcat_tmp_file="${hashcat_tmp_simple_name_file}.hccapx"
+		${hcxpcapng_tool} --hccapx="${tmpdir}${hashcat_tmp_file}" "${enteredpath}" > /dev/null 2>&1
+		if [ -s "${tmpdir}${hashcat_tmp_file}" ]; then
+			hashcat_wpa_mode=2500
+			return 0
+		fi
+	fi
+
+	echo
+	language_strings "${language}" 436 "red"
+	language_strings "${language}" 115 "read"
+	return 1
 }
 
 #Handshake tools menu
@@ -12384,7 +12496,39 @@ function set_hashcat_parameters() {
 		if compare_floats_greater_or_equal "${hashcat_version}" "${hashcat_hccapx_version}"; then
 			hccapx_needed=1
 		fi
+		if compare_floats_greater_or_equal "${hashcat_version}" "${hashcat6_version}"; then
+			hashcat_wpa_mode=22000
+		fi
 	fi
+}
+
+#Convert capture to hashcat mode 22000 (hashcat 6+)
+function convert_cap_to_hashcat_22000_format() {
+
+	debug_print
+
+	local -a hcx_args
+
+	hashcat_tmp_file="${hashcat_tmp_simple_name_file}.22000"
+	hcx_args=( -o "${tmpdir}${hashcat_tmp_file}" )
+	if [ -n "${bssid}" ]; then
+		hcx_args+=( --filtermac="${bssid}" )
+	fi
+	hcx_args+=( "${enteredpath}" )
+	${hcxpcapng_tool} "${hcx_args[@]}" > /dev/null 2>&1
+	if [ -s "${tmpdir}${hashcat_tmp_file}" ]; then
+		hashcat_wpa_mode=22000
+		return 0
+	fi
+
+	hcx_args=( -o "${tmpdir}${hashcat_tmp_file}" "${enteredpath}" )
+	${hcxpcapng_tool} "${hcx_args[@]}" > /dev/null 2>&1
+	if [ -s "${tmpdir}${hashcat_tmp_file}" ]; then
+		hashcat_wpa_mode=22000
+		return 0
+	fi
+
+	return 1
 }
 
 #Determine john the ripper
